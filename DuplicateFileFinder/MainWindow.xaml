@@ -1,0 +1,114 @@
+﻿<Window x:Class="DuplicateFileFinder.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DuplicateFileFinder"
+        mc:Ignorable="d"
+        Title="Duplicate File Finder" Height="477.632" Width="705.263" WindowState="Maximized">
+    <DockPanel >
+           <Expander Header="Search path" Margin="10" DockPanel.Dock="Top" VerticalAlignment="Top" Width="Auto" HorizontalAlignment="Stretch" IsExpanded="True" >
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="70"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                <Button Margin="5" Grid.Column="0" Grid.Row="0" Content="Add" Click="AddSearchPath" ></Button>
+                <!--<TextBox Margin="5" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding SearchPath}"/>-->
+                <ListBox Margin="5" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding SearchPaths}"/>   
+                </Grid>
+            </Expander>
+        
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+            <Button Content="Start Search" Command="{Binding StartSearchCommand}" Height="25" Width="100"  Margin="10" VerticalAlignment="Top"></Button>
+            <Expander Header="Search criteria" Margin="10" VerticalAlignment="Top" >
+                <Grid>
+                    <Grid.RowDefinitions></Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <CheckBox Grid.Column="0" Content="Name"  Margin="10" IsChecked="{Binding SearchCriteriaSelection.Name}"  />
+                    <CheckBox Grid.Column="1" Content="Creation date"  Margin="10" IsChecked="{Binding SearchCriteriaSelection.DateCreated}" />
+                    <CheckBox Grid.Column="2" Content="Size" Margin="10" IsChecked="{Binding SearchCriteriaSelection.Size}" />
+                </Grid>
+            </Expander>
+            <Expander Header="File type" Margin="10" VerticalAlignment="Top" >
+                <Grid >
+                    <Grid.RowDefinitions></Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <RadioButton Grid.Column="0" Content="Images"  Margin="10" IsChecked="{Binding FileTypeSelection.Images}"  />
+                    <RadioButton Grid.Column="1" Content="Videos"  Margin="10" Visibility="Hidden" IsChecked="{Binding FileTypeSelection.Videos}"/>
+                    <RadioButton Grid.Column="2" Content="Others" Margin="10" Visibility="Hidden" IsChecked="{Binding FileTypeSelection.Others}"/>
+                </Grid>
+            </Expander>
+            <Button Content="Delete Selected" Command="{Binding DeleteSelectedCommand}" Height="25" Width="100"  Margin="10" VerticalAlignment="Top"/>
+            <Button Content="Delete Duplicate" Command="{Binding DeleteDuplicateCommand}" Height="25" Width="100"  Margin="10" VerticalAlignment="Top"/>
+
+        </StackPanel>
+        <StatusBar Height="30" DockPanel.Dock="Bottom">
+            <StackPanel Orientation="Horizontal">
+                <ProgressBar Width="200" Height="15" HorizontalAlignment="Right" Value="{Binding ProgressPercentage}"/>
+                <Label FontWeight="Bold" Margin="5,-2,0,0" Content="{Binding StatusText}" VerticalAlignment="Stretch" RenderTransformOrigin="1.1,-0.2" />
+
+            </StackPanel>
+        </StatusBar>
+        
+        <!--Region Row Items-->
+        <Grid Margin="5,0,5,0" DockPanel.Dock="Right">
+            <ListView Margin="10" ItemsSource="{Binding SearchItems}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Show" Width="45" >
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Grid HorizontalAlignment="Stretch">
+                                        <Button Width="20" Content="..." Click="ShowDetails" ></Button>
+                                    </Grid>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="" Width="25" >
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Grid HorizontalAlignment="Stretch">
+                                        <CheckBox IsChecked="{Binding LeftItemDelete}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <!--<GridViewColumn Header="Name" Width="100" DisplayMemberBinding="{Binding LeftItemName}" />-->
+                        <GridViewColumn Header="File" Width="100" DisplayMemberBinding="{Binding LeftItemPath}" />
+                        <GridViewColumn Header="Size (KB)" Width="100" DisplayMemberBinding="{Binding LeftItemSize}" />
+                        <GridViewColumn Header="Date Created" Width="100" DisplayMemberBinding="{Binding LeftItemCreationDate}" />
+                        <GridViewColumn Header="" Width="25" >
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Grid HorizontalAlignment="Stretch">
+                                        <CheckBox IsChecked="{Binding RightItemDelete}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <!--<GridViewColumn Header="Name" Width="100" DisplayMemberBinding="{Binding RightItemName}" />-->
+                        <GridViewColumn Header="Duplicate File" Width="100" DisplayMemberBinding="{Binding RightItemPath}" />
+                        <GridViewColumn Header="Size (KB)" Width="100" DisplayMemberBinding="{Binding RightItemSize}" />
+                        <GridViewColumn Header="Date Created" Width="100" DisplayMemberBinding="{Binding RightItemCreationDate}" />                        
+                    </GridView>                        
+                </ListView.View>       
+            </ListView>
+        </Grid>
+    </DockPanel>
+</Window>
